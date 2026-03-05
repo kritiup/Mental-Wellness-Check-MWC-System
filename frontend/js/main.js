@@ -13,6 +13,10 @@ function showLoginError(message) {
     const err = document.getElementById('loginError');
     err.textContent = message;
     err.classList.remove('d-none');
+    err.classList.add('shake');
+    err.addEventListener('animationend', () => {
+        err.classList.remove('shake');
+    }, { once: true });
 }
 
 // Login form validation and submit handler
@@ -85,6 +89,8 @@ if (registerForm) {
         const msg = document.getElementById('registerMessage');
         msg.textContent = 'Registration successful!';
         msg.classList.remove('d-none');
+        msg.classList.add('highlight-pulse');
+        msg.addEventListener('animationend', () => msg.classList.remove('highlight-pulse'), { once: true });
         registerForm.reset();
         // Redirect to login after a short delay
         setTimeout(() => {
@@ -102,22 +108,7 @@ const suggestionMap = {
     Tired: ['Get some rest.', 'Try relaxing activities.']
 };
 
-function updateSuggestions(mood) {
-    const container = document.getElementById('suggestions');
-    if (!container) return;
-    container.innerHTML = '';
-    if (!mood || !suggestionMap[mood]) {
-        container.textContent = 'Select a mood to see suggestions.';
-        return;
-    }
-    const list = document.createElement('ul');
-    suggestionMap[mood].forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        list.appendChild(li);
-    });
-    container.appendChild(list);
-}
+// updateSuggestions function with animation is defined later after helpers
 
 // Mood form submit handler
 const moodForm = document.getElementById('moodForm');
@@ -195,13 +186,22 @@ if (profileForm) {
 // Update today's summary cards
 function updateTodaySummary(mood, stress, activityCount) {
     if (mood) {
-        document.getElementById('todayMood').textContent = mood;
+        const node = document.getElementById('todayMood');
+        node.textContent = mood;
+        node.classList.add('highlight-pulse');
+        node.addEventListener('animationend', () => node.classList.remove('highlight-pulse'), { once: true });
     }
     if (stress) {
-        document.getElementById('todayStress').textContent = stress + '/10';
+        const node = document.getElementById('todayStress');
+        node.textContent = stress + '/10';
+        node.classList.add('highlight-pulse');
+        node.addEventListener('animationend', () => node.classList.remove('highlight-pulse'), { once: true });
     }
     if (activityCount !== null) {
-        document.getElementById('todayActivities').textContent = activityCount + ' activities';
+        const node = document.getElementById('todayActivities');
+        node.textContent = activityCount + ' activities';
+        node.classList.add('highlight-pulse');
+        node.addEventListener('animationend', () => node.classList.remove('highlight-pulse'), { once: true });
     }
 }
 
@@ -235,6 +235,8 @@ function setCurrentDate() {
         const today = new Date();
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         dateElement.textContent = today.toLocaleDateString('en-US', options);
+        // slight expand animation on load
+        dateElement.classList.add('expand-in');
     }
 }
 
@@ -245,7 +247,7 @@ function loadMoodHistory() {
     if (table) {
         // example row
         table.querySelector('tbody').innerHTML =
-            '<tr><td>2026-03-05</td><td>Happy</td><td>3</td></tr>';
+            '<tr class="expand-in"><td>2026-03-05</td><td>Happy</td><td>3</td></tr>';
     }
     const ctx = document.getElementById('moodChart');
     if (ctx) {
@@ -268,14 +270,119 @@ function loadActivityHistory() {
     const table = document.getElementById('activityTable');
     if (table) {
         table.querySelector('tbody').innerHTML =
-            '<tr><td>2026-03-05</td><td>Exercise, Reading</td></tr>';
+            '<tr class="expand-in"><td>2026-03-05</td><td>Exercise, Reading</td></tr>';
     }
 }
 
 // When history pages load
+
+// --- Animation helpers and event wiring ---
+// Apply fade-in to cards/tables/charts on page load
+function applyPageLoadAnimations() {
+    document.querySelectorAll('.card, table, canvas, .suggestion-list').forEach(el => {
+        el.classList.add('fade-in');
+    });
+}
+
+// Add interactive animations to buttons/sliders/dropdowns/icons
+function setupInteractiveAnimations() {
+    // buttons: hover and click pulse animation
+    document.querySelectorAll('.btn-soft').forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+            btn.classList.add('btn-animate');
+        });
+        btn.addEventListener('animationend', () => {
+            btn.classList.remove('btn-animate');
+        });
+        btn.addEventListener('click', () => {
+            // brief scale effect also triggered by btn-animate
+            btn.classList.add('btn-animate');
+        });
+    });
+
+    // sliders: pulse when value changes
+    document.querySelectorAll('input[type=range]').forEach(slider => {
+        slider.addEventListener('input', () => {
+            slider.classList.add('slider-animate');
+        });
+        slider.addEventListener('animationend', () => {
+            slider.classList.remove('slider-animate');
+        });
+    });
+
+    // select dropdowns: animate on focus and change
+    document.querySelectorAll('select').forEach(sel => {
+        sel.addEventListener('focus', () => {
+            sel.classList.add('dropdown-animate');
+        });
+        sel.addEventListener('change', () => {
+            sel.classList.add('dropdown-animate');
+        });
+        sel.addEventListener('animationend', () => {
+            sel.classList.remove('dropdown-animate');
+        });
+    });
+
+    // icons spin on click if they have class .icon-action
+    document.querySelectorAll('.icon-action').forEach(icon => {
+        icon.addEventListener('click', () => {
+            icon.classList.add('icon-spin');
+            icon.addEventListener('animationend', () => {
+                icon.classList.remove('icon-spin');
+            }, { once: true });
+        });
+    });
+}
+
+// updateSuggestions now includes animation trigger
+function updateSuggestions(mood) {
+    const container = document.getElementById('suggestions');
+    if (!container) return;
+    // animate out existing suggestions before updating
+    container.classList.add('fade-out');
+    setTimeout(() => {
+        container.classList.remove('fade-out');
+        container.innerHTML = '';
+        if (!mood || !suggestionMap[mood]) {
+            container.textContent = 'Select a mood to see suggestions.';
+            return;
+        }
+        const list = document.createElement('ul');
+        suggestionMap[mood].forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            list.appendChild(li);
+        });
+        container.appendChild(list);
+        container.classList.add('fade-in'); // fade into new content
+    }, 500);
+}
+
+// End of animation helpers
+
+// When history pages load
+
+// make page fade in after content is ready
+function showPage() {
+    document.body.classList.remove('page-hidden');
+    document.body.classList.add('page-visible');
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     // Set current date on dashboard
     setCurrentDate();
+
+    // initial page visibility animation
+    showPage();
+
+    // apply page-load animations and interactive listeners
+    applyPageLoadAnimations();
+    setupInteractiveAnimations();
+    animateProgressBars();
+    animateTableRows();
+    setupSmoothScroll();
+    setupFormValidationAnimations();
+
     if (document.getElementById('moodTable')) {
         loadMoodHistory();
     }

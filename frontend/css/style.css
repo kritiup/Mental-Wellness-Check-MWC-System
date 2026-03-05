@@ -209,6 +209,88 @@ input[type="range"]::-webkit-slider-thumb {
     }
 }
 
+/* Animation helpers */
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+.fade-out {
+    animation: fadeOut 0.5s ease-out forwards;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+}
+.shake {
+    animation: shake 0.6s ease-in-out;
+}
+
+@keyframes highlightPulse {
+    0% { background-color: rgba(255,255,0,0.1); }
+    50% { background-color: rgba(255,255,0,0.4); }
+    100% { background-color: rgba(255,255,0,0.1); }
+}
+.highlight-pulse {
+    animation: highlightPulse 1.2s ease-out;
+}
+
+@keyframes expandIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.expand-in {
+    animation: expandIn 0.5s ease-out;
+}
+
+/* Hide content until page loaded */
+.page-hidden {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+.page-visible {
+    opacity: 1;
+}
+
+@keyframes scalePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+.btn-animate {
+    animation: scalePulse 0.4s ease-in-out;
+}
+
+@keyframes sliderPulse {
+    0% { box-shadow: 0 0 0 rgba(79,195,247,0); }
+    50% { box-shadow: 0 0 10px rgba(79,195,247,0.5); }
+    100% { box-shadow: 0 0 0 rgba(79,195,247,0); }
+}
+.slider-animate {
+    animation: sliderPulse 0.6s ease-out;
+}
+
+@keyframes dropdownOpen {
+    0% { transform: translateY(-10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+.dropdown-animate {
+    animation: dropdownOpen 0.3s ease-out;
+}
+
+.icon-spin {
+    display: inline-block;
+    animation: spin 1s linear;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 /* Special mood colors */
 .mood-happy { color: #ffd54f; }
 .mood-sad { color: #7986cb; }
