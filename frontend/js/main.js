@@ -245,9 +245,13 @@ function loadMoodHistory() {
     // TODO: fetch mood data from backend and populate table/chart
     const table = document.getElementById('moodTable');
     if (table) {
-        // example row
+        // example rows with better data
         table.querySelector('tbody').innerHTML =
-            '<tr class="expand-in"><td>2026-03-05</td><td>Happy</td><td>3</td></tr>';
+            '<tr class="expand-in"><td>2026-03-05</td><td><span class="mood-happy"><i class="fas fa-smile"></i> Happy</span></td><td>3/10</td></tr>' +
+            '<tr class="expand-in"><td>2026-03-04</td><td><span class="mood-calm"><i class="fas fa-spa"></i> Calm</span></td><td>2/10</td></tr>' +
+            '<tr class="expand-in"><td>2026-03-03</td><td><span class="mood-stressed"><i class="fas fa-exclamation"></i> Stressed</span></td><td>7/10</td></tr>' +
+            '<tr class="expand-in"><td>2026-03-02</td><td><span class="mood-sad"><i class="fas fa-frown"></i> Sad</span></td><td>5/10</td></tr>' +
+            '<tr class="expand-in"><td>2026-03-01</td><td><span class="mood-calm"><i class="fas fa-spa"></i> Calm</span></td><td>3/10</td></tr>';
     }
     const ctx = document.getElementById('moodChart');
     if (ctx) {
@@ -257,10 +261,37 @@ function loadMoodHistory() {
                 labels: ['Mar 1', 'Mar 2', 'Mar 3', 'Mar 4', 'Mar 5'],
                 datasets: [{
                     label: 'Stress Level',
-                    data: [5, 4, 6, 3, 3],
-                    borderColor: '#5BC0BE',
-                    backgroundColor: 'rgba(91,192,190,0.2)'
+                    data: [3, 5, 7, 2, 3],
+                    borderColor: '#4fc3f7',
+                    backgroundColor: 'rgba(79,195,247,0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#81c784',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
                 }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: { font: { size: 14 }, color: '#2c3e50' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        ticks: { color: '#2c3e50' },
+                        grid: { color: 'rgba(0,0,0,0.1)' }
+                    },
+                    x: {
+                        ticks: { color: '#2c3e50' },
+                        grid: { color: 'rgba(0,0,0,0.1)' }
+                    }
+                }
             }
         });
     }
@@ -270,7 +301,11 @@ function loadActivityHistory() {
     const table = document.getElementById('activityTable');
     if (table) {
         table.querySelector('tbody').innerHTML =
-            '<tr class="expand-in"><td>2026-03-05</td><td>Exercise, Reading</td></tr>';
+            '<tr class="expand-in"><td>2026-03-05</td><td><i class="fas fa-dumbbell activity-exercise"></i> Exercise, <i class="fas fa-book activity-reading"></i> Reading</td></tr>' +
+            '<tr class="expand-in"><td>2026-03-04</td><td><i class="fas fa-spa activity-meditation"></i> Meditation, <i class="fas fa-music activity-music"></i> Music</td></tr>' +
+            '<tr class="expand-in"><td>2026-03-03</td><td><i class="fas fa-users activity-friends"></i> Friends</td></tr>' +
+            '<tr class="expand-in"><td>2026-03-02</td><td><i class="fas fa-pen activity-journaling"></i> Journaling</td></tr>' +
+            '<tr class="expand-in"><td>2026-03-01</td><td><i class="fas fa-dumbbell activity-exercise"></i> Exercise</td></tr>';
     }
 }
 
