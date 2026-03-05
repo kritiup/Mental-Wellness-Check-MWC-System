@@ -247,11 +247,11 @@ function loadMoodHistory() {
     if (table) {
         // add sample mood history rows
         const rows = [
-            { date: '2026-03-05', mood: 'Happy', stress: '3' },
-            { date: '2026-03-04', mood: 'Calm', stress: '2' },
-            { date: '2026-03-03', mood: 'Stressed', stress: '7' },
-            { date: '2026-03-02', mood: 'Sad', stress: '5' },
-            { date: '2026-03-01', mood: 'Calm', stress: '3' }
+            { date: '2026-03-05', mood: 'Happy', stress: 3 },
+            { date: '2026-03-04', mood: 'Calm', stress: 2 },
+            { date: '2026-03-03', mood: 'Stressed', stress: 7 },
+            { date: '2026-03-02', mood: 'Sad', stress: 5 },
+            { date: '2026-03-01', mood: 'Calm', stress: 3 }
         ];
         let html = '';
         rows.forEach(row => {
@@ -263,56 +263,62 @@ function loadMoodHistory() {
     }
     
     // Initialize chart
-    const ctx = document.getElementById('moodChart');
-    if (ctx && typeof Chart !== 'undefined') {
-        setTimeout(() => {
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Mar 1', 'Mar 2', 'Mar 3', 'Mar 4', 'Mar 5'],
-                    datasets: [{
-                        label: 'Stress Level (0-10)',
-                        data: [3, 5, 7, 2, 3],
-                        borderColor: '#4fc3f7',
-                        backgroundColor: 'rgba(79,195,247,0.15)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true,
-                        pointRadius: 6,
-                        pointBackgroundColor: '#81c784',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointHoverRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            labels: { 
-                                font: { size: 14, weight: 'bold' },
-                                color: '#2c3e50',
-                                padding: 15
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 10,
-                            ticks: { color: '#2c3e50', font: { size: 12 } },
-                            grid: { color: 'rgba(0,0,0,0.1)', drawBorder: true }
-                        },
-                        x: {
-                            ticks: { color: '#2c3e50', font: { size: 12 } },
-                            grid: { color: 'rgba(0,0,0,0.1)' }
+    const chartCanvas = document.getElementById('moodChart');
+    if (chartCanvas && typeof Chart !== 'undefined') {
+        // destroy existing chart if it exists to prevent errors
+        if (window.moodChartInstance) {
+            window.moodChartInstance.destroy();
+        }
+        
+        const ctx = chartCanvas.getContext('2d');
+        window.moodChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mar 1', 'Mar 2', 'Mar 3', 'Mar 4', 'Mar 5'],
+                datasets: [{
+                    label: 'Stress Level',
+                    data: [3, 5, 7, 2, 3],
+                    borderColor: '#4fc3f7',
+                    backgroundColor: 'rgba(79,195,247,0.15)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 7,
+                    pointBackgroundColor: '#81c784',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 9
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: { 
+                            font: { size: 13, weight: '600' },
+                            color: '#2c3e50',
+                            padding: 15,
+                            usePointStyle: true
                         }
                     }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        ticks: { color: '#2c3e50', font: { size: 12 }, stepSize: 2 },
+                        grid: { color: 'rgba(0,0,0,0.08)', drawBorder: true },
+                        title: { display: true, text: 'Stress Level' }
+                    },
+                    x: {
+                        ticks: { color: '#2c3e50', font: { size: 12 } },
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    }
                 }
-            });
-        }, 200);
+            }
+        });
     }
 }
 
@@ -344,6 +350,63 @@ function loadActivityHistory() {
             html += `<tr><td>${row.date}</td><td>${activities}</td></tr>`;
         });
         table.querySelector('tbody').innerHTML = html;
+    }
+    
+    // Initialize activity chart
+    const chartCanvas = document.getElementById('activityChart');
+    if (chartCanvas && typeof Chart !== 'undefined') {
+        // destroy existing chart if it exists
+        if (window.activityChartInstance) {
+            window.activityChartInstance.destroy();
+        }
+        
+        const ctx = chartCanvas.getContext('2d');
+        window.activityChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Mar 1', 'Mar 2', 'Mar 3', 'Mar 4', 'Mar 5'],
+                datasets: [{
+                    label: 'Activities Completed',
+                    data: [1, 1, 1, 2, 2],
+                    backgroundColor: [
+                        '#81c784',
+                        '#81c784',
+                        '#81c784',
+                        '#4fc3f7',
+                        '#4fc3f7'
+                    ],
+                    borderColor: '#2c3e50',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            font: { size: 13, weight: '600' },
+                            color: '#2c3e50',
+                            padding: 15
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: { color: '#2c3e50', font: { size: 12 } },
+                        grid: { color: 'rgba(0,0,0,0.08)' }
+                    },
+                    y: {
+                        ticks: { color: '#2c3e50', font: { size: 12 } },
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    }
+                }
+            }
+        });
     }
 }
 
