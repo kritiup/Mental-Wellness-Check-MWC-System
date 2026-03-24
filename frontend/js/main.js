@@ -541,6 +541,39 @@ function updateSuggestions(mood) {
 
 // End of animation helpers
 
+function animateProgressBars() {
+    document.querySelectorAll('.progress-bar').forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0';
+        setTimeout(() => { bar.style.width = width; }, 100);
+    });
+}
+function animateTableRows() {
+    document.querySelectorAll('tbody tr').forEach((row, index) => {
+        row.style.animationDelay = `${index * 0.1}s`;
+        row.classList.add('fade-in');
+    });
+}
+function setupSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+}
+function setupFormValidationAnimations() {
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            if (!form.checkValidity()) {
+                form.classList.add('shake');
+                form.addEventListener('animationend', () => form.classList.remove('shake'), { once: true });
+            }
+        });
+    });
+}
+
 // When history pages load
 
 // make page fade in after content is ready
